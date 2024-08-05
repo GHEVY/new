@@ -1,5 +1,6 @@
 package com.example.app;
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,8 @@ public  class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     Context context;
 
     public interface OnItemClickListener {
+        void OnCreate(Bundle savedInstanceState);
+
         void onItemClick(int position);
     }
 
@@ -54,7 +57,6 @@ public  class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String data = itemList.get(position);
         holder.textView.setText(data);
-
     }
 
     public int getItemCount() {

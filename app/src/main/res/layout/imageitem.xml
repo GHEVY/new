@@ -14,7 +14,7 @@
         android:background="@color/gray">
 
         <ImageView
-            android:id="@+id/imageview"
+            android:id="@+id/imagebutton"
             android:layout_width="70dp"
             android:layout_height="50dp"
             android:textColor="@color/design_default_color_error"

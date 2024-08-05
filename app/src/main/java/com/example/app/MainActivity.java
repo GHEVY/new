@@ -1,13 +1,10 @@
 package com.example.app;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,6 +12,9 @@ import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity implements MyAdapter.OnItemClickListener {
+
+    Button favorites;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,8 +27,18 @@ public class MainActivity extends AppCompatActivity implements MyAdapter.OnItemC
         items.add("Asia");
         items.add("Europe");
         items.add("Africa");
+        favorites = findViewById(R.id.favBut);
+        favorites.setOnClickListener(v -> {
+            Intent i = new Intent(MainActivity.this, FavActivity.class);
+            startActivity(i);
+        });
         MyAdapter adapter = new MyAdapter(items, this, this);
-        recyclerView.setAdapter(new MyAdapter(items, this, this));
+        recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void OnCreate(Bundle savedInstanceState) {
+
     }
 
     @Override
@@ -48,5 +58,10 @@ public class MainActivity extends AppCompatActivity implements MyAdapter.OnItemC
             startActivity(i);
         }
 
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+        super.onPointerCaptureChanged(hasCapture);
     }
 }

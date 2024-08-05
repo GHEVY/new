@@ -2,5 +2,5 @@
     <string name="app_name">app</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="text">There are several countries on every continent, and you can either add new ones to your list or choose your favorites.</string>
+    <string name="link_text"><a href="https://chatgpt.com/"></a>https://chatgpt.com</string>
 </resources>

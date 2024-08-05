@@ -12,7 +12,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.App"
-        tools:targetApi="31">
+        >
+        <activity
+            android:name=".FlagActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CountryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".FavActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AddActivity"
+            android:exported="false" />
         <activity
             android:name=".AfricaActivity"
             android:exported="false" />

@@ -1,30 +1,24 @@
 package com.example.app;
-import static com.google.android.material.internal.ContextUtils.getActivity;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.annotation.SuppressLint;
-import  android.view.View;
-import android.widget.AdapterView;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-public  class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     ImageView imageView;
     TextView textView;
-
-
-
 
     public ViewHolder(@NonNull View itemView) {
         super(itemView);
         itemView.setOnClickListener(this);
-        imageView = itemView.findViewById(R.id.imageview);
+        imageView = itemView.findViewById(R.id.imagebutton);
         textView = itemView.findViewById(R.id.imagetext);
-;
+
     }
 
     public ImageView getImageView() {
@@ -43,9 +37,8 @@ public  class ViewHolder extends RecyclerView.ViewHolder implements View.OnClick
         this.textView = textView;
     }
 
-    @SuppressLint("RestrictedApi")
     @Override
     public void onClick(View v) {
-        Toast.makeText(itemView.getContext(), textView.getText(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(v.getContext(), "textView.getText()", Toast.LENGTH_SHORT).show();
     }
 }

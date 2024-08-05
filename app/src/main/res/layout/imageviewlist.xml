@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/imageView"
     android:layout_width="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="wrap_content"
     android:layout_marginTop="20dp"
     android:background="@color/white">
@@ -13,14 +12,14 @@
         android:id="@+id/frame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints"
-        android:background="@color/gray">
+        android:background="@color/gray"
+        tools:ignore="MissingConstraints">
 
         <ImageView
-            android:id="@+id/imageview"
+            android:id="@+id/image"
             android:layout_width="70dp"
             android:layout_height="50dp"
-            android:textColor="@color/design_default_color_error"
+            android:contentDescription="TODO"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingConstraints"
@@ -30,29 +29,28 @@
     </FrameLayout>
 
     <TextView
-        android:id="@+id/imagetext"
-        android:text="Text"
-        android:textSize="20dp"
+        android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="10dp"
+        android:text="Text"
         android:textColor="@color/design_default_color_error"
-        app:layout_constraintStart_toEndOf="@id/frame"
+        android:textSize="20dp"
         app:layout_constraintEnd_toStartOf="@+id/Favbut"
+        app:layout_constraintStart_toEndOf="@id/frame"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints"
-        />
+        tools:ignore="MissingConstraints" />
 
     <CheckBox
         android:id="@+id/Favbut"
-        android:src="@android:drawable/btn_star"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="5dp"
-        app:layout_constraintStart_toEndOf="@id/imagetext"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         android:contextClickable="true"
+        android:src="@android:drawable/btn_star"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/text"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints"
 
         />
