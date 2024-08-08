@@ -1,80 +1,75 @@
 package com.example.app;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.app.database.Countries;
+import com.example.app.database.CursorWrapper;
+import com.example.app.databinding.ActivityFavBinding;
 
 import java.util.ArrayList;
 
-public class FavActivity extends AppCompatActivity implements MyAdapter.OnItemClickListener {
-    ArrayList<ImageItem> list;
+public class FavActivity extends AppCompatActivity implements CountryAdapter.OnItemClickListener {
     private static final String extra = "extra";
     private static final int requestChange = 221;
-    int newPosition;
-    RecyclerView recyclerView1;
+    private CountryAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fav);
-        recyclerView1 = findViewById(R.id.rec_view1);
-        list = ImageItem.getFavList();
-        if (!list.isEmpty()) {
+        ActivityFavBinding binding;
+        binding = ActivityFavBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        binding.recView1.setLayoutManager(layoutManager);
+        adapter = new CountryAdapter(((App) getApplication()).getDatabase(), getItems(), this);
+        binding.recView1.setAdapter(adapter);
+        updateAdapter();
+        if (!getItems().isEmpty()) {
             TextView a = findViewById(R.id.note);
             a.setVisibility(View.GONE);
+
         }
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        recyclerView1.setLayoutManager(layoutManager);
-        SecAdapter adapter = new SecAdapter(this, list, this);
-        recyclerView1.setAdapter(adapter);
-        updateAdapter();
     }
 
-    @Override
-    public void OnCreate(Bundle savedInstanceState) {
-
-    }
 
     @Override
-    public void onItemClick(int position) {
+    public void onItemClick(ImageItem data) {
         Intent i = new Intent(FavActivity.this, CountryActivity.class);
-        i.putExtra(extra, list.get(position));
-        i.putExtra("con", list.get(position).getContinent());
-        newPosition = position;
+        i.putExtra(extra, data.getId().toString());
         startActivityForResult(i, requestChange);
     }
 
     protected void onActivityResult(int req, int res, Intent data) {
         super.onActivityResult(req, res, data);
-        if (req == requestChange) {
-            ImageItem a = data.getParcelableExtra("requestChange");
-            assert a != null;
-            if (!a.isFav) {
-                list.remove(newPosition);
-            } else {
-                list.set(newPosition, data.getParcelableExtra("requestChange"));
-            }
-        }
         updateAdapter();
     }
 
+
+    @SuppressLint("NotifyDataSetChanged")
     private void updateAdapter() {
-        list = ImageItem.getFavList();
-        SecAdapter adapter = new SecAdapter(this, list, this);
-        recyclerView1.setAdapter(adapter);
+        adapter.setData(getItems());
+        adapter.notifyDataSetChanged();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (list.isEmpty()) {
-            TextView a = findViewById(R.id.note);
+        TextView a = findViewById(R.id.note);
+        if (getItems().isEmpty()) {
             a.setVisibility(View.VISIBLE);
+        }
+        else {
+            a.setVisibility(View.INVISIBLE);
+
         }
         updateAdapter();
     }
@@ -82,5 +77,32 @@ public class FavActivity extends AppCompatActivity implements MyAdapter.OnItemCl
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
         super.onPointerCaptureChanged(hasCapture);
+    }
+
+    public ArrayList<ImageItem> getItems() {
+        ArrayList<ImageItem> list = new ArrayList<>();
+        try (CursorWrapper cursor = query()) {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                if (cursor.getItem().isFavorite()) {
+                    list.add(cursor.getItem());
+                }
+                cursor.moveToNext();
+            }
+        }
+        return list;
+    }
+
+    private CursorWrapper query() {
+        Cursor cursor = ((App) getApplication()).getDatabase().query(
+                Countries.Table.name,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+        return new CursorWrapper(cursor);
     }
 }

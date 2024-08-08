@@ -5,6 +5,7 @@
 
     <application
         android:allowBackup="true"
+        android:name=".App"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -26,17 +27,8 @@
             android:name=".AddActivity"
             android:exported="false" />
         <activity
-            android:name=".AfricaActivity"
-            android:exported="false" />
-        <activity
-            android:name=".EuropeActivity"
-            android:exported="false" />
-        <activity
-            android:name=".AsiaActivity"
-            android:exported="false" />
-        <activity
-            android:name=".AmericaActivity"
-            android:exported="false" />
+            android:name=".ContinentActivity"
+            android:exported="true"/>
         <activity
             android:name=".MainActivity"
             android:exported="true">

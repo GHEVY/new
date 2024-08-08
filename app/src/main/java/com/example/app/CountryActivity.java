@@ -1,107 +1,90 @@
 package com.example.app;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.Objects;
+import com.example.app.database.Countries;
+import com.example.app.database.CursorWrapper;
+import com.example.app.databinding.ActivityCountryBinding;
+
+import java.util.UUID;
 
 public class CountryActivity extends AppCompatActivity {
     private static final String extra = "extra";
-    private static final int requestChange = 221;
-    EditText editText;
-    ImageView imageView;
-    Button linkButton;
-    CheckBox checkBox;
-    ImageItem imageItem;
-    Button saveButton;
-    String newText;
-    TextView info;
+    private ActivityCountryBinding binding;
+    private ImageItem imageItem;
+    private String newText;
+    private static SQLiteDatabase database;
 
-
+    public static Intent newIntent(Context packageContext, String a) {
+        Intent intent = new Intent(packageContext, CountryActivity.class);
+        intent.putExtra(extra, a );
+        return intent;
+    }
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_country);
-        editText = findViewById(R.id.imagetext);
-        imageView = findViewById(R.id.imagebutton);
-        imageItem = getIntent().getParcelableExtra(extra);
-        String con = getIntent().getStringExtra("con");
-        imageItem.setContinent(con);
-        info = findViewById(R.id.info);
-        info.setText("The continent of " +imageItem.getText() + " is " + imageItem.getContinent());
-        assert imageItem != null;
-        editText.setText(imageItem.getText());
-        imageView.setImageResource(imageItem.getImage());
-        linkButton = findViewById(R.id.link);
-        checkBox = findViewById(R.id.Favbut);
-        if (imageItem.isFav) {
-            checkBox.setChecked(true);
+        binding = ActivityCountryBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        database = ((App)getApplication()).getDatabase();
+        UUID id = UUID.fromString(getIntent().getStringExtra(extra));
+        imageItem = getItem(id);
+        binding.info.setText("The continent of " + imageItem.getText() + " is " + imageItem.getContinent());
+        binding.imagetext.setText(imageItem.getText());
+        binding.imagebutton.setImageResource(imageItem.getImage());
+        if (imageItem.isFavorite()) {
+            binding.Favbut.setChecked(true);
         }
-        checkBox.setOnClickListener(v -> {
-            if (imageItem.isFav) {
-                imageItem.setFav(false);
-                imageItem.delFav();
-                checkBox.setChecked(false);
+        binding.Favbut.setOnClickListener(v -> {
+            if (imageItem.isFavorite()) {
+                imageItem.setFavorite(false);
+                binding.Favbut.setChecked(false);
                 Toast.makeText(getBaseContext(), "Removed from favorites!", Toast.LENGTH_SHORT).show();
             } else {
-                imageItem.setFav(true);
-                imageItem.addFav();
-                checkBox.setChecked(true);
+                imageItem.setFavorite(true);
+                binding.Favbut.setChecked(true);
                 Toast.makeText(getBaseContext(), "Added to favorites!", Toast.LENGTH_SHORT).show();
             }
         });
 
-        linkButton.setOnClickListener(v -> {
+        binding.link.setOnClickListener(v -> {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://chatgpt.com"));
             startActivity(browserIntent);
         });
         newText = imageItem.getText();
-        String oldtext = newText;
-        editText.addTextChangedListener(new TextWatcher() {
+        binding.imagetext.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 newText = s.toString();
-
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                newText =s.toString();
+                newText = s.toString();
             }
         });
-        saveButton = findViewById(R.id.but);
-        saveButton.setOnClickListener(v -> {
+        binding.but.setOnClickListener(v -> {
             if (newText != null) {
                 String b = newText.replace(" ", "");
                 if (!b.isEmpty()) {
-                    if(Objects.equals(newText, oldtext)){
-                        Intent result = new Intent();
-                        result.putExtra("requestChange", imageItem);
-                        setResult(requestChange, result);
-                        finish();
-                    }
                     imageItem.setText(newText);
-                    Intent result = new Intent();
-                    result.putExtra("requestChange", imageItem);
-                    setResult(requestChange, result);
+                    update(imageItem);
                     finish();
                 } else {
                     Toast.makeText(getBaseContext(), "Write the name of a country!", Toast.LENGTH_SHORT).show();
@@ -110,6 +93,52 @@ public class CountryActivity extends AppCompatActivity {
                 Toast.makeText(getBaseContext(), "Write the name of a country!", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public ImageItem getItem(UUID id) {
+        if (id == null) {
+            Toast.makeText(getBaseContext(),"s",Toast.LENGTH_SHORT).show();
+            return null;
+        }
+        try (CursorWrapper cursor = query(
+                new String[]{id.toString()}
+        )) {
+            if (cursor.getCount() == 0) {
+                return null;
+            }
+            cursor.moveToFirst();
+            return cursor.getItem();
+        }
+    }
+
+    private CursorWrapper query(String[] whereArgs) {
+        Cursor cursor = database.query(
+                Countries.Table.name,
+                null,
+                "id = ?",
+                whereArgs,
+                null,
+                null,
+                null
+        );
+        return new CursorWrapper(cursor);
+    }
+
+    private static ContentValues getContentValues(ImageItem item) {
+        ContentValues values = new ContentValues();
+        values.put(Countries.Table.Cols.id, item.getId().toString());
+        values.put(Countries.Table.Cols.country_name, item.getText());
+        values.put(Countries.Table.Cols.continents, item.getContinent());
+        values.put(Countries.Table.Cols.isFav, item.isFavorite()? 1 : 0);
+        return values;
+    }
+
+
+    public static void update(ImageItem a) {
+        ContentValues values = getContentValues(a);
+        String selection = Countries.Table.Cols.id + " = ?";
+        String[] selectionArgs = {a.getId().toString()};
+        database.update(Countries.Table.name, values, selection, selectionArgs);
     }
 }
 
