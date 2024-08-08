@@ -44,6 +44,7 @@ public class CountryActivity extends AppCompatActivity {
         binding.info.setText("The continent of " + imageItem.getText() + " is " + imageItem.getContinent());
         binding.imagetext.setText(imageItem.getText());
         binding.imagebutton.setImageResource(imageItem.getImage());
+        Toast.makeText(this,imageItem.getText() + "s page",Toast.LENGTH_SHORT).show();
         if (imageItem.isFavorite()) {
             binding.Favbut.setChecked(true);
         }
