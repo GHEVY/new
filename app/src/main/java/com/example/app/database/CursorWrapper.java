@@ -2,7 +2,7 @@ package com.example.app.database;
 
 import android.database.Cursor;
 
-import com.example.app.ImageItem;
+import com.example.app.CountryItem;
 
 import java.util.UUID;
 
@@ -11,12 +11,12 @@ public class CursorWrapper extends android.database.CursorWrapper {
         super(cursor);
     }
 
-    public ImageItem getItem() {
+    public CountryItem getItem() {
         String uuidString = getString(getColumnIndex(Countries.Table.Cols.id));
         String name = getString(getColumnIndex(Countries.Table.Cols.country_name));
         String continent = getString(getColumnIndex(Countries.Table.Cols.continents));
         int photo  = getInt(getColumnIndex(Countries.Table.Cols.photo));
-        int isfav =getInt( getColumnIndex(Countries.Table.Cols.isFav));
+        int isFav =getInt( getColumnIndex(Countries.Table.Cols.isFav));
         UUID id = null;
         if (uuidString != null) {
             try {
@@ -24,10 +24,10 @@ public class CursorWrapper extends android.database.CursorWrapper {
             } catch (IllegalArgumentException ignored) {
             }
         }
-        ImageItem item = new ImageItem(id);
-        item.setText(name != null ? name : "");
+        CountryItem item = new CountryItem(id);
+        item.setName(name != null ? name : "");
         item.setContinent(continent != null ? continent : "");
-        item.setFavorite(isfav==1);
+        item.setFavorite(isFav==1);
         item.setImage(photo);
         return item;
     }

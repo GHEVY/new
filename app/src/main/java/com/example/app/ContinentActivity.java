@@ -43,14 +43,14 @@ public class ContinentActivity extends AppCompatActivity implements CountryAdapt
         continent = getIntent().getStringExtra(DATA_KEY);
         LinearLayoutManager layoutManager =
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        binding.recView.setLayoutManager(layoutManager);
-        binding.add.setOnClickListener(v -> {
+        binding.recyclerView.setLayoutManager(layoutManager);
+        binding.addButton.setOnClickListener(v -> {
             Intent intent = AddActivity.newIntent(this);
             startActivityForResult(intent, REQUEST_CODE_ADD);
         });
         if (getItems(continent) != null) {
             adapter = new CountryAdapter(database, getItems(continent), this);
-            binding.recView.setAdapter(adapter);
+            binding.recyclerView.setAdapter(adapter);
         }
     }
 
@@ -60,12 +60,12 @@ public class ContinentActivity extends AppCompatActivity implements CountryAdapt
         adapter.notifyDataSetChanged();
     }
 
-    public void add(ImageItem a) {
+    public void add(CountryItem a) {
         ContentValues values = getContentValues(a);
         database.insert(Countries.Table.name, null, values);
     }
 
-    public void update(ImageItem a) {
+    public void update(CountryItem a) {
         ContentValues values = getContentValues(a);
         String selection = Countries.Table.Cols.id + " = ?";
         String[] selectionArgs = {a.getId().toString()};
@@ -85,8 +85,8 @@ public class ContinentActivity extends AppCompatActivity implements CountryAdapt
         return new CursorWrapper(cursor);
     }
 
-    public List<ImageItem> getItems(String cont) {
-        ArrayList<ImageItem> list = new ArrayList<>();
+    public List<CountryItem> getItems(String cont) {
+        ArrayList<CountryItem> list = new ArrayList<>();
         try (CursorWrapper cursor = query(null, null)) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
@@ -100,10 +100,10 @@ public class ContinentActivity extends AppCompatActivity implements CountryAdapt
     }
 
 
-    public static ContentValues getContentValues(ImageItem item) {
+    public static ContentValues getContentValues(CountryItem item) {
         ContentValues values = new ContentValues();
         values.put(Countries.Table.Cols.id, item.getId().toString());
-        values.put(Countries.Table.Cols.country_name, item.getText());
+        values.put(Countries.Table.Cols.country_name, item.getName());
         values.put(Countries.Table.Cols.continents, item.getContinent());
         values.put(Countries.Table.Cols.isFav, item.isFavorite() ? 1 : 0);
         values.put(Countries.Table.Cols.photo, item.getImage());
@@ -111,7 +111,7 @@ public class ContinentActivity extends AppCompatActivity implements CountryAdapt
     }
 
     @Override
-    public void onItemClick(ImageItem item) {
+    public void onItemClick(CountryItem item) {
         Intent i = CountryActivity.newIntent(getApplicationContext(), item.getId().toString());
         startActivity(i);
     }
@@ -123,14 +123,14 @@ public class ContinentActivity extends AppCompatActivity implements CountryAdapt
                 UUID uuid = UUID.fromString(data.getStringExtra("id"));
                 String text = data.getStringExtra("text");
                 boolean isFav = data.getIntExtra("isFav", 0) == 1;
-                ImageItem a = new ImageItem(UUID.randomUUID());
                 int photo = data.getIntExtra("photo", 0);
-                a.setImage(photo);
-                a.setId(uuid);
-                a.setText(text);
-                a.setContinent(continent);
-                a.setFavorite(isFav);
-                add(a);
+                CountryItem countryItem = new CountryItem(UUID.randomUUID());
+                countryItem.setImage(photo);
+                countryItem.setId(uuid);
+                countryItem.setName(text);
+                countryItem.setContinent(continent);
+                countryItem.setFavorite(isFav);
+                add(countryItem);
             }
         }
         updateAdapter();

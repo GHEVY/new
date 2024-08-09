@@ -1,21 +1,16 @@
 package com.example.app;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import androidx.annotation.NonNull;
-
 import java.util.UUID;
 
-public class ImageItem {
+public class CountryItem {
 
     private UUID id;
     private int image;
-    private String text;
+    private String name;
     private boolean isFavorite;
     private String continent;
 
-    public ImageItem(UUID id) {
+    public CountryItem(UUID id) {
         this.id = id;
     }
 
@@ -47,16 +42,16 @@ public class ImageItem {
         return image;
     }
 
-    public String getText() {
-        return text;
+    public String getName() {
+        return name;
     }
 
     public void setImage(int image) {
         this.image = image;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setName(String name) {
+        this.name = name;
     }
 
 

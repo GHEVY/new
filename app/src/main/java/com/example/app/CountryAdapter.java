@@ -20,21 +20,21 @@ import java.util.List;
 
 public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHolder> {
     public interface OnItemClickListener {
-        void onItemClick(ImageItem imageItem);
+        void onItemClick(CountryItem imageItem);
     }
 
-    private final List<ImageItem> list;
+    private final List<CountryItem> list;
     private final OnItemClickListener listener;
     private final SQLiteDatabase database;
 
-    public CountryAdapter(SQLiteDatabase database, List<ImageItem> list, OnItemClickListener listener) {
+    public CountryAdapter(SQLiteDatabase database, List<CountryItem> list, OnItemClickListener listener) {
         this.list = list;
         this.listener = listener;
         this.database = database;
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void setData(List<ImageItem> list) {
+    public void setData(List<CountryItem> list) {
         this.list.clear();
         this.list.addAll(list);
         notifyDataSetChanged();
@@ -50,7 +50,7 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ImageItem item = list.get(position);
+        CountryItem item = list.get(position);
         holder.bind(item, listener);
     }
 
@@ -69,12 +69,12 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
             super(itemView);
             textView = itemView.findViewById(R.id.text);
             imageView = itemView.findViewById(R.id.image);
-            checkBox = itemView.findViewById(R.id.Favbut);
+            checkBox = itemView.findViewById(R.id.FavBut);
         }
 
-        public void bind(ImageItem item, @NonNull OnItemClickListener listener) {
+        public void bind(CountryItem item, @NonNull OnItemClickListener listener) {
             imageView.setImageResource(item.getImage());
-            textView.setText(item.getText());
+            textView.setText(item.getName());
             itemView.setOnClickListener(v -> listener.onItemClick(item));
             checkBox.setChecked(item.isFavorite());
             checkBox.setOnClickListener(v -> {
@@ -88,28 +88,25 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHold
                             Toast.makeText(v.getContext(), "Added to favorites!", Toast.LENGTH_SHORT).show();
                         }
                         update(item);
-
                     }
             );
         }
     }
 
-    private void update(ImageItem a) {
+    private void update(CountryItem a) {
         ContentValues values = getContentValues(a);
         String selection = Countries.Table.Cols.id + " = ?";
         String[] selectionArgs = {a.getId().toString()};
         database.update(Countries.Table.name, values, selection, selectionArgs);
-
     }
 
-    private ContentValues getContentValues(ImageItem item) {
+    private ContentValues getContentValues(CountryItem item) {
         ContentValues values = new ContentValues();
         values.put(Countries.Table.Cols.id, item.getId().toString());
-        values.put(Countries.Table.Cols.country_name, item.getText());
+        values.put(Countries.Table.Cols.country_name, item.getName());
         values.put(Countries.Table.Cols.continents, item.getContinent());
         values.put(Countries.Table.Cols.isFav, item.isFavorite() ? 1 : 0);
         values.put(Countries.Table.Cols.photo, item.getImage());
         return values;
     }
-
 }

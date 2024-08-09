@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -29,20 +28,19 @@ public class FavActivity extends AppCompatActivity implements CountryAdapter.OnI
         binding = ActivityFavBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        binding.recView1.setLayoutManager(layoutManager);
+        binding.recyclerView.setLayoutManager(layoutManager);
         adapter = new CountryAdapter(((App) getApplication()).getDatabase(), getItems(), this);
-        binding.recView1.setAdapter(adapter);
+        binding.recyclerView.setAdapter(adapter);
         updateAdapter();
         if (!getItems().isEmpty()) {
             TextView a = findViewById(R.id.note);
             a.setVisibility(View.GONE);
-
         }
     }
 
 
     @Override
-    public void onItemClick(ImageItem data) {
+    public void onItemClick(CountryItem data) {
         Intent i = new Intent(FavActivity.this, CountryActivity.class);
         i.putExtra(extra, data.getId().toString());
         startActivityForResult(i, requestChange);
@@ -63,13 +61,12 @@ public class FavActivity extends AppCompatActivity implements CountryAdapter.OnI
     @Override
     protected void onResume() {
         super.onResume();
-        TextView a = findViewById(R.id.note);
+        TextView textView = findViewById(R.id.note);
         if (getItems().isEmpty()) {
-            a.setVisibility(View.VISIBLE);
+            textView.setVisibility(View.VISIBLE);
         }
         else {
-            a.setVisibility(View.INVISIBLE);
-
+            textView.setVisibility(View.INVISIBLE);
         }
         updateAdapter();
     }
@@ -79,8 +76,8 @@ public class FavActivity extends AppCompatActivity implements CountryAdapter.OnI
         super.onPointerCaptureChanged(hasCapture);
     }
 
-    public ArrayList<ImageItem> getItems() {
-        ArrayList<ImageItem> list = new ArrayList<>();
+    public ArrayList<CountryItem> getItems() {
+        ArrayList<CountryItem> list = new ArrayList<>();
         try (CursorWrapper cursor = query()) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {

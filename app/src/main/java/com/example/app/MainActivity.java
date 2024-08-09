@@ -24,14 +24,14 @@ public class MainActivity extends AppCompatActivity implements ContinentAdapter.
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        binding.recView.setLayoutManager(new GridLayoutManager(this, 2));
+        binding.recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
         binding.favBut.setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, FavActivity.class);
             startActivity(i);
         });
         ContinentAdapter adapter = new ContinentAdapter(items,  this);
-        binding.recView.setAdapter(adapter);
+        binding.recyclerView.setAdapter(adapter);
     }
 
     @Override

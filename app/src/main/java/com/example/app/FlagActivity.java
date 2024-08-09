@@ -12,7 +12,7 @@ import com.example.app.databinding.ActivityFlagBinding;
 
 public class FlagActivity extends AppCompatActivity implements ContinentAdapter.OnItemClickListener {
 
-    private static final int REQUEST_FLAG = 1243;
+    private static final int REQUEST_CODE_FLAG = 1243;
     private final int[] photoResIds = new int[]{
             R.drawable.usa,
             R.drawable.bra,
@@ -36,17 +36,17 @@ public class FlagActivity extends AppCompatActivity implements ContinentAdapter.
         setContentView(binding.getRoot());
 
         LinearLayoutManager layoutManager = new GridLayoutManager(this, 2);
-        binding.recview.setLayoutManager(layoutManager);
+        binding.recView.setLayoutManager(layoutManager);
         PhotoAdapter adapter = new PhotoAdapter(this, photoResIds, this);
-        binding.recview.setAdapter(adapter);
+        binding.recView.setAdapter(adapter);
     }
 
 
     @Override
     public void onItemClick(int position) {
         Intent data = new Intent();
-        data.putExtra("req", photoResIds[position]);
-        setResult(REQUEST_FLAG, data);
+        data.putExtra("flag", photoResIds[position]);
+        setResult(REQUEST_CODE_FLAG, data);
         finish();
     }
 

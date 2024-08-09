@@ -23,8 +23,8 @@ import java.util.UUID;
 public class CountryActivity extends AppCompatActivity {
     private static final String extra = "extra";
     private ActivityCountryBinding binding;
-    private ImageItem imageItem;
-    private String newText;
+    private CountryItem countryItem;
+    private String newName;
     private static SQLiteDatabase database;
 
     public static Intent newIntent(Context packageContext, String a) {
@@ -40,65 +40,62 @@ public class CountryActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         database = ((App)getApplication()).getDatabase();
         UUID id = UUID.fromString(getIntent().getStringExtra(extra));
-        imageItem = getItem(id);
-        binding.info.setText("The continent of " + imageItem.getText() + " is " + imageItem.getContinent());
-        binding.imagetext.setText(imageItem.getText());
-        binding.imagebutton.setImageResource(imageItem.getImage());
-        Toast.makeText(this,imageItem.getText() + "s page",Toast.LENGTH_SHORT).show();
-        if (imageItem.isFavorite()) {
-            binding.Favbut.setChecked(true);
+        countryItem = getItem(id);
+        binding.info.setText("The continent of " + countryItem.getName() + " is " + countryItem.getContinent());
+        binding.nameText.setText(countryItem.getName());
+        binding.flagButton.setImageResource(countryItem.getImage());
+        if (countryItem.isFavorite()) {
+            binding.FavBut.setChecked(true);
         }
-        binding.Favbut.setOnClickListener(v -> {
-            if (imageItem.isFavorite()) {
-                imageItem.setFavorite(false);
-                binding.Favbut.setChecked(false);
+        binding.FavBut.setOnClickListener(v -> {
+            if (countryItem.isFavorite()) {
+                countryItem.setFavorite(false);
+                binding.FavBut.setChecked(false);
                 Toast.makeText(getBaseContext(), "Removed from favorites!", Toast.LENGTH_SHORT).show();
             } else {
-                imageItem.setFavorite(true);
-                binding.Favbut.setChecked(true);
+                countryItem.setFavorite(true);
+                binding.FavBut.setChecked(true);
                 Toast.makeText(getBaseContext(), "Added to favorites!", Toast.LENGTH_SHORT).show();
             }
-        });
 
+        });
         binding.link.setOnClickListener(v -> {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://chatgpt.com"));
             startActivity(browserIntent);
         });
-        newText = imageItem.getText();
-        binding.imagetext.addTextChangedListener(new TextWatcher() {
+        newName = countryItem.getName();
+        binding.nameText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                newText = s.toString();
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                newText = s.toString();
+                newName = s.toString();
             }
         });
-        binding.but.setOnClickListener(v -> {
-            if (newText != null) {
-                String b = newText.replace(" ", "");
-                if (!b.isEmpty()) {
-                    imageItem.setText(newText);
-                    update(imageItem);
+        binding.saveButton.setOnClickListener(v -> {
+            if (newName != null) {
+                String changedName = newName.replace(" ", "");
+                if (!changedName.isEmpty()) {
+                    countryItem.setName(newName);
+                    update(countryItem);
                     finish();
                 } else {
-                    Toast.makeText(getBaseContext(), "Write the name of a country!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), R.string.name_is_incorrect, Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(getBaseContext(), "Write the name of a country!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), R.string.name_is_incorrect, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    public ImageItem getItem(UUID id) {
+    public CountryItem getItem(UUID id) {
         if (id == null) {
-            Toast.makeText(getBaseContext(),"s",Toast.LENGTH_SHORT).show();
             return null;
         }
         try (CursorWrapper cursor = query(
@@ -125,17 +122,17 @@ public class CountryActivity extends AppCompatActivity {
         return new CursorWrapper(cursor);
     }
 
-    private static ContentValues getContentValues(ImageItem item) {
+    private static ContentValues getContentValues(CountryItem item) {
         ContentValues values = new ContentValues();
         values.put(Countries.Table.Cols.id, item.getId().toString());
-        values.put(Countries.Table.Cols.country_name, item.getText());
+        values.put(Countries.Table.Cols.country_name, item.getName());
         values.put(Countries.Table.Cols.continents, item.getContinent());
         values.put(Countries.Table.Cols.isFav, item.isFavorite()? 1 : 0);
         return values;
     }
 
 
-    public static void update(ImageItem a) {
+    public static void update(CountryItem a) {
         ContentValues values = getContentValues(a);
         String selection = Countries.Table.Cols.id + " = ?";
         String[] selectionArgs = {a.getId().toString()};

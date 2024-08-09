@@ -20,8 +20,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 Countries.Table.Cols.continents + ", " +
                 Countries.Table.Cols.country_name + ", " +
                 Countries.Table.Cols.isFav + "," +
-                Countries.Table.Cols.photo
-                +
+                Countries.Table.Cols.photo +
                 ")");
     }
 
