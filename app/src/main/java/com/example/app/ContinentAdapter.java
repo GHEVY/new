@@ -28,7 +28,7 @@ public class ContinentAdapter extends RecyclerView.Adapter<ContinentAdapter.View
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.lay, parent, false);
-        return new ViewHolder(view, listener);
+        return new ViewHolder(view);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class ContinentAdapter extends RecyclerView.Adapter<ContinentAdapter.View
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
 
-        public ViewHolder(View itemView, final OnItemClickListener listener) {
+        public ViewHolder(View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.text);
 
