@@ -10,34 +10,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-public  class ContinentAdapter extends RecyclerView.Adapter<ContinentAdapter.ViewHolder> {
+public class ContinentAdapter extends RecyclerView.Adapter<ContinentAdapter.ViewHolder> {
     private final List<String> itemList;
     private final OnItemClickListener listener;
 
     public interface OnItemClickListener {
-        void onItemClick(int position);
+        void onItemClick(String data);
     }
 
     public ContinentAdapter(List<String> itemList, OnItemClickListener listener) {
         this.itemList = itemList;
         this.listener = listener;
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView textView;
-
-        public ViewHolder(View itemView, final OnItemClickListener listener) {
-            super(itemView);
-            textView = itemView.findViewById(R.id.text);
-            itemView.setOnClickListener(v -> {
-                if (listener != null) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        listener.onItemClick(position);
-                    }
-                }
-            });
-        }
     }
 
     @NonNull
@@ -51,10 +34,33 @@ public  class ContinentAdapter extends RecyclerView.Adapter<ContinentAdapter.Vie
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String data = itemList.get(position);
-        holder.textView.setText(data);
+        holder.bind(data, listener);
     }
 
     public int getItemCount() {
         return itemList.size();
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final TextView textView;
+
+        public ViewHolder(View itemView, final OnItemClickListener listener) {
+            super(itemView);
+            textView = itemView.findViewById(R.id.text);
+
+        }
+
+        public void bind(String data, OnItemClickListener listener) {
+            textView.setText(data);
+            itemView.setOnClickListener(v -> {
+                if (listener != null) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        listener.onItemClick(data);
+                    }
+                }
+            });
+
+        }
     }
 }

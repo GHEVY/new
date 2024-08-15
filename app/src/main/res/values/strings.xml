@@ -1,6 +1,20 @@
 <resources>
     <string name="app_name">app</string>
+    <string name="link_text"><a href="https://chatgpt.com/">chatgpt</a></string>
+    <string name="hint">Write the name!</string>
+    <string name="save">SAVE </string>
+    <string name="add">"ADD "</string>
+    <string name="favorites">FAVORITES </string>
+    <string name="cont">Continent of this country is </string>
+    <string name="america">AMERICA</string>
+    <string name="asia">ASIA</string>
+    <string name="africa">AFRICA</string>
+    <string name="europe">EUROPE</string>
+    <string name="delFromFav">Removed from favorites!</string>
+    <string name="addToFav">Added to favorites!</string>
+
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="name_is_incorrect">Write the name of a country!</string>
-    <string name="link_text"><a href="https://chatgpt.com/"></a>https://chatgpt.com</string>
+    <string name="fav">THERE ARE NOT FAVORITES YET!</string>
+
+
 </resources>

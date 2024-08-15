@@ -1,8 +1,9 @@
 package com.example.app;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public class CountryItem {
+public class CountryItem implements Serializable {
 
     private UUID id;
     private int image;
@@ -53,6 +54,4 @@ public class CountryItem {
     public void setName(String name) {
         this.name = name;
     }
-
-
 }

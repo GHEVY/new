@@ -1,55 +1,48 @@
 package com.example.app;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.app.databinding.ActivityMainBinding;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity implements ContinentAdapter.OnItemClickListener {
-    private final List<String> items = Arrays.asList("America", "Asia", "Europe", "Africa");
+
+    private final ArrayList<String> items = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-         ActivityMainBinding binding;
-
+        ActivityMainBinding binding;
         binding = ActivityMainBinding.inflate(getLayoutInflater());
+        items.add(getString(R.string.asia));
+        items.add(getString(R.string.europe));
+        items.add(getString(R.string.africa));
+        items.add(getString(R.string.america));
         setContentView(binding.getRoot());
         binding.recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-
         binding.favBut.setOnClickListener(v -> {
-            Intent i = new Intent(MainActivity.this, FavActivity.class);
-            startActivity(i);
+            FragmentTransaction tr = getSupportFragmentManager().beginTransaction();
+            tr.add(R.id.fragment_container,FavoriteFragment.newInstance());
+            tr.addToBackStack(null);
+            tr.commit();
         });
-        ContinentAdapter adapter = new ContinentAdapter(items,  this);
+        ContinentAdapter adapter = new ContinentAdapter(items, this);
         binding.recyclerView.setAdapter(adapter);
     }
 
     @Override
-    public void onItemClick(int position) {
-        Intent i;
-        if (position == 0) {
-            i = ContinentActivity.newIntent(getApplicationContext(), "AMERICA");
-            startActivity(i);
-        } else if (position == 1) {
-            i = ContinentActivity.newIntent(getApplicationContext(),"ASIA");
-            startActivity(i);
-        } else if (position == 2) {
-            i = ContinentActivity.newIntent(getApplicationContext(),"EUROPE");
-            startActivity(i);
-        } else if (position == 3) {
-            i = ContinentActivity.newIntent(getApplicationContext(),"AFRICA");
-            startActivity(i);
-        }
+    public void onItemClick(String name) {
+            ContinentFragment frag = ContinentFragment.newInstance(name);
+            FragmentTransaction tr = getSupportFragmentManager().beginTransaction();
+            tr.add(R.id.fragment_container,frag);
+            tr.addToBackStack(name);
+            tr.commit();
     }
 
 }

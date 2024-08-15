@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">app</string>
+    <string name="link_text"><a href="https://chatgpt.com/">chatgpt</a></string>
+    <string name="hint">Напишите название страны! </string>
+    <string name="save">Сохранить </string>
+    <string name="add">Добавить </string>
+    <string name="favorites">Избранное </string>
+    <string name="cont">Континент этой страны это </string>
+    <string name="america">АМЕРИКА</string>
+    <string name="asia">АЗИЯ</string>
+    <string name="africa">АФРИКА</string>
+    <string name="europe">ЕВРОПА</string>
+    <string name="fav">ИЗБРАННЫХ ПОКА НЕТ!</string>
+    <string name="delFromFav">Убран из избранного!</string>
+    <string name="addToFav">Добавлено в избранное!</string>
+
+
+</resources>
